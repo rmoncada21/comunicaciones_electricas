@@ -14,7 +14,8 @@ function plot_espectro_completo(signal, fc, fs, titulo)
     fft_shifted = fftshift(fft_normalizada);  % Desplazar la FFT para centrar en 0
     
     % Visualización del espectro
-    figure;
+
+    figure('Units', 'Normalized', 'OuterPosition', [0 0 1 1]); % Ventana a tamaño máximo
     plot(f, fft_shifted, 'LineWidth', 1.5);  % Graficar con línea gruesa para mayor claridad
     
     % Personalización de la gráfica
