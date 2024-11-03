@@ -80,14 +80,14 @@ mt3 = Am3 * cos(2 * pi * fm3 * t);  % Mensaje 3
 vector_mensaje = {mt1, mt2, mt3};   % Agrupación de los mensajes
 
 % -------------------------------------------------------------------------
-% Graficar Señales de Mensaje en el Tiempo
+%% Graficar Señales de Mensaje en el Tiempo
 % -------------------------------------------------------------------------
 plot_tiempo(mt1, t, 'Mensaje 1');
 plot_tiempo(mt2, t, 'Mensaje 2');
 plot_tiempo(mt3, t, 'Mensaje 3');
 
 % -------------------------------------------------------------------------
-% Transmisor: Modulación AM y Multiplexación FDM
+%% Transmisor: Modulación AM y Multiplexación FDM
 % -------------------------------------------------------------------------
 % Realiza la modulación AM y la multiplexación de las señales de mensaje
 % utilizando las frecuencias de portadora asignadas.
@@ -107,11 +107,19 @@ plot_espectro(fdm_celda{2}{3}, vector_fc(3), fs, 'Mensaje 3 Modulado');
 plot_espectro(fdm_celda{1}, fcn_max, fs, 'FDM');
 
 % -------------------------------------------------------------------------
-% Implementación de la modulación FM
+%% Implementación de la modulación FM
 % -------------------------------------------------------------------------
+close all;
+fc_mod_fm = 110e3;  % frecuencia de modulación para fm
+fs_fm = 10*fc_mod_fm;   % frecuencia de muestreo para fm
+fm_signal = modulate(fdm_celda{1}, fc_mod_fm, fs_fm, 'fm');
+
+plot_tiempo(fm_signal, t, 'Señal Fm modulada');
+plot_espectro(fm_signal, fc_mod_fm, 10*fc_mod_fm, 'Señal Fm modulada');
+plot_espectro_completo(fm_signal, fc_mod_fm, 10*fc_mod_fm, 'Señal Fm modulada');
 
 % -------------------------------------------------------------------------
-% Receptor (Pendiente de Implementación)
+%% Receptor (Pendiente de Implementación)
 % -------------------------------------------------------------------------
 % La sección de receptor está pendiente de implementación y debería incluir
 % demodulación y separación de las señales originales.
