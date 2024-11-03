@@ -1,63 +1,118 @@
-%% modulacion fm
+%% Proyecto - Comunicaciones Eléctricas
+% -------------------------------------------------------------------------
+% Descripción:
+% Este proyecto tiene como objetivo la simulación de un sistema de comunicaciones 
+% eléctricas basado en modulación FM, multiplexación FDM, superheterodinaje y demodulación. 
+% Se configuran señales de prueba, se realiza la modulación AM de cada tono y se implementa 
+% la multiplexación de las señales moduladas. Finalmente, se analizan las 
+% señales a través de su espectro en frecuencia.
+% -------------------------------------------------------------------------
 
-% Características 
-%
-% fmax  - frecuencia max permitida para las señales de audios
-% fs    - Frecuencia de muestro
-% T     - Periodo de la señal
-% t     - vector de tiempo
-% deltaf- Un valor típico para Δf en sistemas de FM es entre 5 y 10 veces la máxima frecuencia de la señal de mensaje.
+% -------------------------------------------------------------------------
+% Parámetros Generales del Sistema
+% -------------------------------------------------------------------------
+% fm       - Frecuencia de modulación
+% fs       - Frecuencia de muestreo del sistema (Hz)
+% T        - Tiempo total de simulación (s)
+% t        - Vector de tiempo de la simulación
+% deltaf   - Desviación de frecuencia para sistemas de FM (no implementado aquí),
+%            valor típico entre 5 y 10 veces la máxima frecuencia de mensaje.
+
+% -------------------------------------------------------------------------
+% Configuración de Tono de Prueba
+% -------------------------------------------------------------------------
+% Am1, Am2, Am3   - Amplitudes de los tonos de prueba
+% fm1, fm2, fm3   - Frecuencias de los tonos de prueba
+% Cada tono representa una señal de mensaje que será modulada y multiplexada.
+
+Am1 = 10; fm1 = 1000;      % Tono 1: Amplitud 10, Frecuencia 1 kHz
+Am2 = 10; fm2 = 2000;      % Tono 2: Amplitud 10, Frecuencia 2 kHz
+Am3 = 10; fm3 = 3000;      % Tono 3: Amplitud 10, Frecuencia 3 kHz
+
+% -------------------------------------------------------------------------
+% Configuración de la Portadora
+% -------------------------------------------------------------------------
+% Ac1, Ac2, Ac3   - Amplitudes de las portadoras
+% fc1, fc2, fc3   - Frecuencias de las portadoras, calculadas en función de 
+%                   la frecuencia de mensaje (10 * fm) o utilizando banda de guarda.
 % 
-% características del tono
-% Am1   - amplitud del tono
-% fm1   - frecuencia del tono
-%
-% características de la portadora
-% Ac   - amplitud de la portadora
-% fc   - frecuencia de la portadora
+% Estas portadoras serán utilizadas para modular cada señal de mensaje.
+Ac1 = 1; fc1 = 10 * fm1;   % Portadora 1: Amplitud 1, Frecuencia 10 kHz
+Ac2 = 1;                   % Portadora 2: Amplitud 1, Frecuencia calculada con banda de guarda
+Ac3 = 1;                   % Portadora 3: Amplitud 1, Frecuencia calculada con banda de guarda
 
+% -------------------------------------------------------------------------
+% Parámetros de Simulación
+% -------------------------------------------------------------------------
+% banda_guarda - Banda de guarda entre señales moduladas para evitar interferencia (Hz)
+% ancho_banda  - Ancho de banda total asignado al sistema (Hz)
+% vector_fm    - Vector de frecuencias de mensaje
+% vector_fc    - Vector de frecuencias de portadoras, ajustado con banda de guarda
+% fcn_max      - Frecuencia de portadora máxima en el sistema
+% fs           - Frecuencia de muestreo (10 veces fcn_max)
+% T            - Tiempo de simulación
+% t            - Vector de tiempo para simulación
 
-fmax = 15e3;
-fs = 3*fmax;
-T = 0.1; % 100 ms
-t = 0:1/fs:T;
-% deltaf = 75e3;
+banda_guarda = 10e3;        % Banda de guarda: 10 kHz
+ancho_banda = 120e3;        % Ancho de banda total: 120 kHz
 
-% simular tono
-Am1 = 10;
-fm1 = 3e3;
-tono1 = Am1 * cos(2*pi*fm1*t);
+% Vector de frecuencias de los mensajes
+vector_fm = [fm1, fm2, fm3];
 
-% simular portadora
-Ac = 1;
-fc = 110e6;
-deltaf = 5*15e3;
-kf = deltaf/Am1; % sensibilidad del modulador de frecuencia - cambiar para los demas mensajes
+% Vector de frecuencias de portadoras, ajustadas para evitar solapamiento
+vector_fc = gen_fc_band_guard(vector_fm, fc1, banda_guarda, ancho_banda);
+fcn_max = max(vector_fc);   % Frecuencia máxima de las portadoras
 
-% obtener la modulacion fm: Ac*cos[2pifc+2pif*integral(mt)dt]
-% obtener la integral del mensaje
-signal_integral = cumtrapz(tono1);
+fs = 10 * fcn_max;          % Frecuencia de muestreo: 10 veces la portadora máxima
+T = 0.02;                   % Duración de la simulación (20 ms)
+t = (0:1/fs:T);             % Vector de tiempo
 
-% obtenr la señal modulada
-% portadora = cos(2*pi*fc*t);
-fm_signal = Ac*cos(2*pi*fc+2*pi*kf*signal_integral);
-% fm_signal = tono1 .* portadora;
+% -------------------------------------------------------------------------
+% Generación de Señales de Mensaje (Tonos de Prueba)
+% -------------------------------------------------------------------------
+% mt1, mt2, mt3 - Señales de mensaje para cada tono
+% vector_mensaje - Colección de los tonos de prueba, a ser utilizados en modulación
 
-figure;
-plot(t, signal_integral);
+mt1 = Am1 * cos(2 * pi * fm1 * t);  % Mensaje 1
+mt2 = Am2 * cos(2 * pi * fm2 * t);  % Mensaje 2
+mt3 = Am3 * cos(2 * pi * fm3 * t);  % Mensaje 3
 
-% graficar el especto de la señal
-% Espectro de la señal FM
-N = length(fm_signal);
-f = linspace(-fs/2, fs/2, N);
-fm_signal_fft = fftshift(fft(fm_signal));
+vector_mensaje = {mt1, mt2, mt3};   % Agrupación de los mensajes
 
-figure;
-plot(f, abs(fm_signal_fft));
-title('Espectro de la Señal FM');
-xlabel('Frecuencia (Hz)');
-ylabel('Magnitud');
-axis([-200e3 200e3 0 max(abs(fm_signal_fft))]);
-grid on;
+% -------------------------------------------------------------------------
+% Graficar Señales de Mensaje en el Tiempo
+% -------------------------------------------------------------------------
+plot_tiempo(mt1, t, 'Mensaje 1');
+plot_tiempo(mt2, t, 'Mensaje 2');
+plot_tiempo(mt3, t, 'Mensaje 3');
 
-disp('done');
+% -------------------------------------------------------------------------
+% Transmisor: Modulación AM y Multiplexación FDM
+% -------------------------------------------------------------------------
+% Realiza la modulación AM y la multiplexación de las señales de mensaje
+% utilizando las frecuencias de portadora asignadas.
+
+% Modulación AM de cada mensaje con su respectiva portadora
+fdm_celda = fdm(vector_mensaje, fs, vector_fc, vector_fm);
+
+% -------------------------------------------------------------------------
+% Graficar Espectros de Señales Moduladas
+% -------------------------------------------------------------------------
+% Muestra el espectro de cada señal modulada AM y la señal multiplexada total
+plot_espectro(fdm_celda{2}{1}, vector_fc(1), fs, 'Mensaje 1 Modulado');
+plot_espectro(fdm_celda{2}{2}, vector_fc(2), fs, 'Mensaje 2 Modulado');
+plot_espectro(fdm_celda{2}{3}, vector_fc(3), fs, 'Mensaje 3 Modulado');
+
+% Graficar espectro de la señal FDM completa
+plot_espectro(fdm_celda{1}, fcn_max, fs, 'FDM');
+
+% -------------------------------------------------------------------------
+% Implementación de la modulación FM
+% -------------------------------------------------------------------------
+
+% -------------------------------------------------------------------------
+% Receptor (Pendiente de Implementación)
+% -------------------------------------------------------------------------
+% La sección de receptor está pendiente de implementación y debería incluir
+% demodulación y separación de las señales originales.
+% -------------------------------------------------------------------------
