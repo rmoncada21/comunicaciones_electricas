@@ -1,3 +1,4 @@
 *.pdf
 test/
 *test*.m
+plot_espectro[0-9]*.m
