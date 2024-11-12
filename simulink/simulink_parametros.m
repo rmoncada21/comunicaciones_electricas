@@ -1,5 +1,5 @@
 %% parametros para simulación
-clear all;
+%% clear all;
 %% Archivo: test_am_mod
 fm_test_mod_am = 1000;
 fc_test_mod_am = 10*fm_test_mod_am;
@@ -47,11 +47,15 @@ fc2_mux = f_portadoras(2)
 fc3_mux = f_portadoras(3)
 
 
-fs_mux = 100 * fc3_mux;
+fs_mux = 10 * fc3_mux;
 ts_mux = 1/fs_mux;
 
 % Frecuencias para portadoras para el receptor
-frecuencia_intermedia = 10e4;
+% frecuencia_intermedia = 10.7e6;
+frecuencia_intermedia = 110e3;
+fs_mux = 10 * frecuencia_intermedia;
+% ts_mux = 1/fs_mux;
+
 fc1_receptor = frecuencia_intermedia + fc3_mux;
 fc2_receptor = frecuencia_intermedia + fc2_mux;
 fc3_receptor = frecuencia_intermedia + fc1_mux;
@@ -63,8 +67,4 @@ fprintf('fc3_receptor: %.3e\n', fc3_receptor);
 
 %% Filtro
 
-%% frecuencias para proyecto_simulink
 
-fssimulink=3*110e3; % frecuencia de muestreo
-% fssimulink=300000;
-tsimulink = 1/fssimulink;
