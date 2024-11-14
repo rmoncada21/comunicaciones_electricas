@@ -1,3 +1,4 @@
+addpath("scripts\");
 %% parametros para simulación
 %% clear all;
 %% Archivo: test_am_mod
