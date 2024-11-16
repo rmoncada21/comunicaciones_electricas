@@ -18,13 +18,13 @@
 % deltaf   - Desviación de frecuencia para sistemas de FM (no implementado aquí),
 %            valor típico entre 5 y 10 veces la máxima frecuencia de mensaje.
 
+%% Configuración de parametros 
 % -------------------------------------------------------------------------
 % Configuración de Tono de Prueba
 % -------------------------------------------------------------------------
 % Am1, Am2, Am3   - Amplitudes de los tonos de prueba
 % fm1, fm2, fm3   - Frecuencias de los tonos de prueba
 % Cada tono representa una señal de mensaje que será modulada y multiplexada.
-
 Am1 = 15; fm1 = 1000;      % Tono 1: Amplitud 10, Frecuencia 1 kHz
 Am2 = 10; fm2 = 2000;      % Tono 2: Amplitud 10, Frecuencia 2 kHz
 Am3 = 5; fm3 = 3000;      % Tono 3: Amplitud 10, Frecuencia 3 kHz
@@ -41,7 +41,7 @@ Ac1 = 1; fc1 = 10 * fm1;   % Portadora 1: Amplitud 1, Frecuencia 10 kHz
 Ac2 = 1;                   % Portadora 2: Amplitud 1, Frecuencia calculada con banda de guarda
 Ac3 = 1;                   % Portadora 3: Amplitud 1, Frecuencia calculada con banda de guarda
 
-% -------------------------------------------------------------------------
+%% -------------------------------------------------------------------------
 % Parámetros de Simulación
 % -------------------------------------------------------------------------
 % banda_guarda - Banda de guarda entre señales moduladas para evitar interferencia (Hz)
@@ -67,7 +67,7 @@ fs = 10 * fcn_max;          % Frecuencia de muestreo: 10 veces la portadora máx
 T = 0.02;                   % Duración de la simulación (20 ms)
 t = (0:1/fs:T);             % Vector de tiempo
 
-% -------------------------------------------------------------------------
+%% -------------------------------------------------------------------------
 % Generación de Señales de Mensaje (Tonos de Prueba)
 % -------------------------------------------------------------------------
 % mt1, mt2, mt3 - Señales de mensaje para cada tono
