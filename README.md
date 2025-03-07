@@ -1,2 +1,2 @@
-# comunicaciones_electricas
-Trabajos y proyectos del curso de Comunicaciones Eléctricas
+# Comunicaciones Electricas
+Trabajos y proyectos de los cursos de Comunicaciones Eléctricas I, II y Taller de Comunicaciones Eléctricas
