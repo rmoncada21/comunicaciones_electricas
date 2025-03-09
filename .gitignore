@@ -1,0 +1,8 @@
+*.pdf
+test/
+*test*.*
+plot_espectro[0-9]*.m
+proyecto_respaldo.asv
+slprj/
+*.autosave
+*.slxc
