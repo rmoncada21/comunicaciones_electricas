@@ -5,3 +5,5 @@ slprj/
 *.r****b
 *_tonos.m
 test*/
+*.original
+test.*
