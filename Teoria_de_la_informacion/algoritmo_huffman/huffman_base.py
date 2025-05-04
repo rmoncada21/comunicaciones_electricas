@@ -106,6 +106,7 @@ for c in string:
         freq[c] = prob_unit
 
 freq = sorted(freq.items(), key=lambda x: x[1], reverse=True) # se convierte a lista de tuplas
+print(f"Longitud de freq: {len(freq)}")
 # print(f"freq: {freq}")
 nodes = freq
 # print(f"Nodos: {nodes}")
@@ -130,7 +131,10 @@ for (char, frequency) in freq:
 ################################## Implementaciones
 # li_huffman_code = {} # contiene (clave,longitud del código)
 # li_huffman_code = shannon_compute.longitud_huffman_code(freq, huffmanCode)
+L_og = shannon_compute.longitud_original(freq)
 HX = shannon_compute.entropia_fuente(freq) # entropia de la fuente
-L = shannon_compute.longitud_promedio_huffman_code(freq, huffmanCode)
-var = shannon_compute.varianza_huffman_code(freq, huffmanCode, L)
+L_huff = shannon_compute.longitud_promedio_huffman_code(freq, huffmanCode)
+var = shannon_compute.varianza_huffman_code(freq, huffmanCode, L_huff)
+eff_og = shannon_compute.eficiencia_original(HX, L_og)
+eff_huff = shannon_compute.eficiencia_original(HX, L_huff)
 ##################################
