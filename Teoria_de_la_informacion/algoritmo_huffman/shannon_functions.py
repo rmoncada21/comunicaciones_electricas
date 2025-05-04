@@ -12,7 +12,7 @@ def entropia_fuente(freq):
     return HX
 
 # Cálculo de la longitud promedio de los códigos generados por huffman
-def longitud_media(freq, huffman_code):
+def longitud_promedio_huffman_code(freq, huffman_code):
     longitud = 0
     
     for clave, valor_pi in freq:
@@ -22,3 +22,12 @@ def longitud_media(freq, huffman_code):
     print(f"Longitud promedio: {longitud}")
 
     return longitud
+
+# Cálculo de la varianza
+def varianza_huffman_code(freq, huffman_code, longitud_promedio):
+    var = 0
+    for clave, valor_pi in freq:
+        var += valor_pi * (len(huffman_code[clave]) - longitud_promedio) ** 2
+    print(f"varianza = {var}")
+    
+    return var

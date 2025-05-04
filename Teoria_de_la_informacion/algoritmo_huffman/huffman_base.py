@@ -130,6 +130,7 @@ for (char, frequency) in freq:
 ################################## Implementaciones
 # li_huffman_code = {} # contiene (clave,longitud del código)
 # li_huffman_code = shannon_compute.longitud_huffman_code(freq, huffmanCode)
-L = shannon_compute.longitud_promedio_huffman_code(freq, huffmanCode)
 HX = shannon_compute.entropia_fuente(freq) # entropia de la fuente
+L = shannon_compute.longitud_promedio_huffman_code(freq, huffmanCode)
+var = shannon_compute.varianza_huffman_code(freq, huffmanCode, L)
 ##################################
