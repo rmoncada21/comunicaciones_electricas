@@ -4,17 +4,35 @@
 # construir el comando de compilación:
 # python3 archivo.py -i archivo_test.ext ext=(txt, bin, tiff)
 
-FILES=$(wildcard *.*)
 MAIN=huffman_base.py
-APP=$(filter %.py, $(FILES))
-APP_SYNTAX=$(addprefix syntax_, $(APP:.py=))
-TEST_FILE=$(filter-out %.py, $(FILES))
 PYTHON=python3
 SYNTAX=-m py_compile
+
+FILES=$(wildcard *.*)
+
+APP=$(filter %.py, $(FILES))
+APP_SYNTAX=$(addprefix syntax_, $(APP:.py=))
+BIN_FILES=$(filter %.bin, $(FILES))
+
+IMG_TEST_FILES=$(wildcard ../img_test/*)
+TIFF_FILES=$(patsubst ../img_test/%, %,$(IMG_TEST_FILES))
+TEST_FILE=$(filter-out %.py, $(FILES))
+
+TEMP_FILE=temp.txt
 PYCACHE=__pycache__
 
 # funciones Makefile
 all:
+
+touch_testf:
+	touch $(TEMP_FILE)
+
+$(TIFF_FILES):
+	@echo -e "$(PYTHON) $(MAIN) -i $(addprefix ../img_test/, $@) \n"
+	@$(PYTHON) $(MAIN) -i ../img_test/$@
+
+$(BIN_FILES:.bin=): touch_testf
+	xxd $@.bin > $(TEMP_FILE)
 
 $(TEST_FILE):
 	@echo -e "$(PYTHON) $(MAIN) -i $@ \n"
@@ -27,11 +45,13 @@ $(APP_SYNTAX):
 # probar las variables 
 echo:
 # @echo "$(FILES)"
+	@echo "$(BIN_FILES)"
 	@echo "$(APP)"
 	@echo "$(patsubst syntax_%,%,$(APP_SYNTAX))"
 	@echo "$(TEST_FILE)"
+	@echo "$(patsubst ../img_test/%,%,$(TIFF_FILES))"
 
 clean:
 	rm -rf $(PYCACHE)
 
-.PHONY: all $(TEST_FILE) $(APP_SYNTAX) echo clean
+.PHONY: all $(TIFF_FILES) $(BIN_FILES) $(TEST_FILE) $(APP_SYNTAX) echo clean
