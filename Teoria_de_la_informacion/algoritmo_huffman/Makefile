@@ -13,6 +13,8 @@ FILES=$(wildcard *.*)
 APP=$(filter %.py, $(FILES))
 APP_SYNTAX=$(addprefix syntax_, $(APP:.py=))
 BIN_FILES=$(filter %.bin, $(FILES))
+CSV_FILES=$(filter %.csv, $(FILES))
+HUFFMAN_FILES=$(filter %.huffman, $(FILES))
 
 IMG_TEST_FILES=$(wildcard ../img_test/*)
 TIFF_FILES=$(patsubst ../img_test/%, %,$(IMG_TEST_FILES))
