@@ -4,6 +4,8 @@ import getopt
 import csv
 import shannon_functions as shannon_compute
 import compress
+import node_tree
+import decompress
 
 # Parametros de entrada y ayuda:
 file_full_path = ""
@@ -51,39 +53,37 @@ with open(file_full_path, "rb") as f:
         string.append(int_val)
 
 # print(f"{string}");
+# # Árbol binario
+# class NodeTree(object):
+#     def __init__(self, left=None, right=None):
+#         self.left = left
+#         self.right = right
+#     def children(self):
+#         return (self.left, self.right)
+#     def nodes(self):
+#         return (self.left, self.right)
+#     def __str__(self):
+#         return '%s_%s' % (self.left, self.right)
 
-# Árbol binario
-class NodeTree(object):
-    def __init__(self, left=None, right=None):
-        self.left = left
-        self.right = right
-    def children(self):
-        return (self.left, self.right)
-    def nodes(self):
-        return (self.left, self.right)
-    def __str__(self):
-        return '%s_%s' % (self.left, self.right)
-
-def insert_in_tree(raiz, ruta, valor):
-    if(len(ruta)==1):
-        if(ruta=='0'):
-            raiz.left = valor;
-        else:
-            raiz.right = valor;
-    else:
-        if(ruta[0]=='0'):
-            #if type(raiz.left) is int:
-            if(raiz.left==None):
-                raiz.left = NodeTree(None,None);
-            ruta = ruta[1:];
-            insert_in_tree(raiz.left,ruta,valor);
-        else:
-            #if type(raiz.right) is int:
-            if(raiz.right==None):
-                raiz.right = NodeTree(None,None);
-            ruta = ruta[1:];
-            insert_in_tree(raiz.right,ruta,valor);
-
+# def insert_in_tree(raiz, ruta, valor):
+#     if(len(ruta)==1):
+#         if(ruta=='0'):
+#             raiz.left = valor;
+#         else:
+#             raiz.right = valor;
+#     else:
+#         if(ruta[0]=='0'):
+#             #if type(raiz.left) is int:
+#             if(raiz.left==None):
+#                 raiz.left = NodeTree(None,None);
+#             ruta = ruta[1:];
+#             insert_in_tree(raiz.left,ruta,valor);
+#         else:
+#             #if type(raiz.right) is int:
+#             if(raiz.right==None):
+#                 raiz.right = NodeTree(None,None);
+#             ruta = ruta[1:];
+#             insert_in_tree(raiz.right,ruta,valor);
 
 # Función principal del algoritmo de Huffman
 def huffman_code_tree(node, left=True, binString=''):
@@ -115,17 +115,17 @@ while len(nodes) > 1:
     (key1, c1) = nodes[-1]
     (key2, c2) = nodes[-2]
     nodes = nodes[:-2]
-    node = NodeTree(key1, key2)
+    node = node_tree.NodeTree(key1, key2)
     nodes.append((node, c1 + c2))
     #print(nodes)
     nodes = sorted(nodes, key=lambda x: x[1], reverse=True)
 
 huffmanCode = huffman_code_tree(nodes[0][0])
 
-print(' Char | Huffman code ')
-print('----------------------')
-for (char, frequency) in freq:
-    print(' %-4r |%12s' % (char, huffmanCode[char]))
+# print(' Char | Huffman code ')
+# print('----------------------')
+# for (char, frequency) in freq:
+#     print(' %-4r |%12s' % (char, huffmanCode[char]))
 
 
 ################################## Implementaciones
@@ -164,12 +164,25 @@ compress.write_csv_file(string, ruta_diccionario, huffmanCode)
 original_size_bytes = compress.original_file_size(string)
 compressed_size_bytes = compress.compressed_file_size(file_huffman_comprimido)
 compression_rate_percent = compress.compression_rate_precent(original_size_bytes, compressed_size_bytes)
-
 ################################## Resultados
 print("========== Tamaño y Tasa de Compresión ==========")
-print(f"Tamaño original (bytes):         {original_size_bytes}")
-print(f"Tamaño comprimido (bytes):      {compressed_size_bytes}")
-print(f"Tasa de compresión:             {compression_rate_percent:.2f} %")
+print(f"Tamaño original (bytes):           {original_size_bytes}")
+print(f"Tamaño comprimido (bytes):         {compressed_size_bytes}")
+print(f"Tasa de compresión:                {compression_rate_percent:.2f} %")
 print("=================================================")
 
 ################################## Descompresión
+bits_a_leer,diccionario = decompress.leer_diccionario(ruta_diccionario)
+decoding = decompress.construir_arbol(diccionario)
+data_estimated = decompress.decodificar_binario(string, huffmanCode, decoding)
+compress.write_binary_file(recovered_path, data_estimated)
+recovered_size_bytes = compress.compressed_file_size(recovered_path)
+################################## Resultados
+print("\n========== Descompresión ==========")
+print(f"Tamaño original (bytes):           {original_size_bytes}")
+print(f"Tamaño recovered (bytes):          {recovered_size_bytes}")
+print(f"string==data_estimated:            {string==data_estimated}")
+print("")
+print(f"String: {string}")
+print(f"Data estimado: {data_estimated}")
+print("=================================================")
