@@ -55,5 +55,11 @@ echo:
 
 clean:
 	rm -rf $(PYCACHE)
+	rm -f *.csv
+	rm -f *.huffman
+	rm -f ../img_test/*.huffman
+	rm -f ../img_test/*.csv
+	rm -f ../img_test/*recovered_*
+	rm -f *recovered_*
 
 .PHONY: all $(TIFF_FILES) $(BIN_FILES) $(TEST_FILE) $(APP_SYNTAX) echo clean
