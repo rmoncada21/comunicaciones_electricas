@@ -129,12 +129,20 @@ for (char, frequency) in freq:
 
 
 ################################## Implementaciones
-# li_huffman_code = {} # contiene (clave,longitud del código)
-# li_huffman_code = shannon_compute.longitud_huffman_code(freq, huffmanCode)
 L_og = shannon_compute.longitud_original(freq)
 HX = shannon_compute.entropia_fuente(freq) # entropia de la fuente
 L_huff = shannon_compute.longitud_promedio_huffman_code(freq, huffmanCode)
 var = shannon_compute.varianza_huffman_code(freq, huffmanCode, L_huff)
 eff_og = shannon_compute.eficiencia_original(HX, L_og)
 eff_huff = shannon_compute.eficiencia_original(HX, L_huff)
-##################################
+################################## Impresiones
+print("========== Resultados de la Compresión ==========")
+# print(f"Size string: {len(string)}")
+print(f"Longitud del alfabeto de la fuente:  {len(freq)}")
+print(f"Longitud del código original (fijo): {L_og} bits/símbolo")
+print(f"Entropía de la fuente:               {HX} bits/símbolo")
+print(f"Longitud media del código Huffman:   {L_huff} bits/símbolo")
+print(f"Varianza del código Huffman:         {var} bits²")
+print(f"Eficiencia respecto al original:     {eff_og:.2f} %")
+print(f"Eficiencia del código Huffman:       {eff_huff:.2f} %")
+print("=================================================")
