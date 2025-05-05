@@ -65,7 +65,7 @@ def compressed_file_size(file_huffman_comprimido):
     return os.path.getsize(file_huffman_comprimido)
 
 def compression_rate_precent(original_file_size, compressed_file_size):
-    if original_file_size > 0:
+    if original_file_size > 0 & compressed_file_size != 0:
         compression_rate = 1 - (compressed_file_size / original_file_size)
         compression_rate_percent = compression_rate * 100
     else:
