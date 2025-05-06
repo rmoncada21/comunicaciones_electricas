@@ -1,3 +1,3 @@
-# Comunicaciones Eléctricas
+# taller_comunicaciones_electricas
+Trabajos y tarea del curso: Taller de Comunicaciones Eléctricas
 
-Trabajos y proyectos de los cursos de Comunicaciones Eléctricas I, II y Taller de Comunicaciones Eléctricas
