@@ -1,0 +1,20 @@
+CM Example 1 :	Dipole in free space 	
+CM See GetStarted.txt
+CM 
+CM 
+CM 
+CM 
+CE
+GW	1	21	0	0.64727	0	0	-0.64727	0	0.0035	'Wire 1, 21 segments, halve wavelength long.
+GW	2	21	-0.4363	0.6815	0	-0.4363	-0.6815	0	0.0035
+GW	3	21	0.272	0.6135	0	0.272	-0.6135	0	0.0035
+GW	4	21	0.544	0.6136	0	0.544	-0.6136	0	0.0035
+GW	5	21	0.953	0.6045	0	0.953	-0.6045	0	0.0035
+GW	6	21	1.4984	0.5909	0	1.4984	-0.5909	0	0.0035
+GE	0
+LD	5	0	0	0	62900000
+GN	-1
+EK
+EX	0	1	11	0	1	0	0	'Voltage source (1+j0) at wire 1 segment 11.
+FR	0	0	0	0	110	0
+EN
