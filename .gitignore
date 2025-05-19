@@ -7,3 +7,5 @@ slprj/
 test*/
 *.original
 test.*
+__pycache__
+*test*
