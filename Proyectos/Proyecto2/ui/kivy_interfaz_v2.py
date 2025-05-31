@@ -573,7 +573,7 @@ class Screen2(Screen):
         print(f"Ruta de archivo: {self.pwd_archivo}")
         
         # Ejecutar el script graficar.py como un subproceso
-        subprocess.Popen([sys.executable, "graficar.py", str(500), str(self.frecuencia_modulacion)])
+        subprocess.Popen([sys.executable, "../src/graficar.py", str(500), str(self.frecuencia_modulacion)])
         # gra_main()
         # return 'TODO'
 
