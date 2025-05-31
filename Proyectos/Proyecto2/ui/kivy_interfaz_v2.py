@@ -30,7 +30,7 @@ class Screen1(Screen):
         # Fondo animado
         current_dir = os.path.dirname(os.path.abspath(__file__))
         fondo_animado = Image(
-            source=os.path.join(current_dir, '..', 'assets', 'giphy_plasma1.gif'),
+            source=os.path.join(current_dir, '..', 'assets', 'giphy_wave1.gif'),
             anim_delay=0.05,
             allow_stretch=True,
             keep_ratio=True,
@@ -184,7 +184,7 @@ class Screen2(Screen):
             text='Cargar Archivo WAV',
             size_hint=(None, None),
             size=(200, 50),
-            pos_hint={'center_x': .15, 'center_y': .78}
+            pos_hint={'center_x': .15, 'center_y': .72}
         )
         btn_cargar_audio.bind(on_press=self.cargar_audio)
         layout.add_widget(btn_cargar_audio)
@@ -202,7 +202,7 @@ class Screen2(Screen):
         
         ########################### Boton container
         self.boton_container = BoxLayout(
-            orientation='horizontal',
+            # orientation='horizontal',
             size_hint=(None, None),
             size=(200, 50),
             pos_hint={'center_x': .15, 'center_y': 0.60},
@@ -211,9 +211,9 @@ class Screen2(Screen):
 
         ########################### Botón principal - Escoger modulación
         self.boton_principal = Button(
-            text="Escoger tipo de modulación",
+            text="Escoger Banda lateral",
             size_hint=(None, None),
-            size=(250, 50)
+            size=(200, 50)
         )
         self.boton_principal.bind(on_press=self.toggle_botones)
         self.boton_container.add_widget(self.boton_principal)
