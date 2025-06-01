@@ -9,6 +9,7 @@ import sounddevice as sd
 from scipy.io import wavfile
 
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
@@ -285,8 +286,9 @@ class Screen2(Screen):
             size=(200, 50),
             pos_hint={'center_x': .15, 'center_y': .12}
         )
-        btn_init_mod.bind(on_press=self.init_mod)
         btn_init_mod.bind(on_press=self.ir_a_mod)
+        btn_init_mod.bind(on_press=self.iniciar_mod_con_delay)
+        # btn_init_mod.bind(on_press=self.init_mod)
         # btn_init_mod.bind(on_press=self.ir_pantalla4)
         layout.add_widget(btn_init_mod)
 
@@ -300,8 +302,14 @@ class Screen2(Screen):
         btn_salir.bind(on_press=self.salir)
         layout.add_widget(btn_salir)
     ############################################################################################################
+    ########################### Función para esperar 5 segundos
+    def iniciar_mod_con_delay(self, instance):
+        # self.init_mod(instance)  # Ejecuta primero
+        Clock.schedule_once(lambda dt: self.init_mod(instance), 5)  # Espera 3 segundos y ejecuta
+    
+    ########################### Función para ir a pantalla3_modulación
     def ir_a_mod(self, instance):
-        self.manager.current = 'pantalla3_modulacion'
+        self.manager.current = 'Screen3_modulacion'
 
     ########################### Función Regresar a pantalla 1
     def regresar_a_pantalla1(self, instance):
@@ -577,7 +585,7 @@ class Screen2(Screen):
         # gra_main()
         # return 'TODO'
 
-class pantalla3_modulacion(Screen):
+class Screen3_modulacion(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         layout = FloatLayout()
@@ -985,7 +993,7 @@ class MyApp(App):
         screen_manager.add_widget(Screen1(name='pantalla1'))
         screen_manager.add_widget(Screen2(name='pantalla2'))
         screen_manager.add_widget(Screen3(name='pantalla3'))
-        screen_manager.add_widget(pantalla3_modulacion(name='pantalla3_modulacion'))
+        screen_manager.add_widget(Screen3_modulacion(name='Screen3_modulacion'))
         return screen_manager
 
 
