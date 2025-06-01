@@ -31,10 +31,12 @@ class Screen1(Screen):
         # Fondo animado
         current_dir = os.path.dirname(os.path.abspath(__file__))
         fondo_animado = Image(
-            source=os.path.join(current_dir, '..', 'assets', 'giphy_wave1.gif'),
+            # source=os.path.join(current_dir, '..', 'assets', 'giphy_wave1.gif'),
+            # source=os.path.join(current_dir, '..', 'assets', 'giphy_signal3.gif'),
+            source=os.path.join(current_dir, '..', 'assets', 'giphy_net1.gif'),
             anim_delay=0.05,
             allow_stretch=True,
-            keep_ratio=True,
+            keep_ratio=False,
             size_hint=(1, 1),
             pos_hint={'x': 0, 'y': 0}
         )
@@ -150,6 +152,15 @@ class Screen2(Screen):
             keep_ratio=True
         )
         layout.add_widget(fondo_animado)
+
+        # Imagen de fondo
+        # fondo = Image(
+        #     source="../assets/wall_paper_1.jpg", 
+        #     allow_stretch=True, 
+        #     keep_ratio=False
+        # )
+        # fondo.disabled = True
+        # layout.add_widget(fondo)
 
         ########################### Título
         label_titulo = Label(
@@ -309,7 +320,7 @@ class Screen2(Screen):
     
     ########################### Función para ir a pantalla3_modulación
     def ir_a_mod(self, instance):
-        self.manager.current = 'Screen3_modulacion'
+        self.manager.current = 'Screen2_modulation'
 
     ########################### Función Regresar a pantalla 1
     def regresar_a_pantalla1(self, instance):
@@ -585,7 +596,7 @@ class Screen2(Screen):
         # gra_main()
         # return 'TODO'
 
-class Screen3_modulacion(Screen):
+class Screen2_modulation(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         layout = FloatLayout()
@@ -661,10 +672,10 @@ class Screen3(Screen):
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
         fondo_animado = Image(
-            source=os.path.join(current_dir, '..', 'assets', 'giphy_signal4.gif'),  # Ajuste para usar ../assets'fondo_animado.gif',  # debe ser un GIF válido
+            source=os.path.join(current_dir, '..', 'assets', 'giphy_signal2.gif'),  # Ajuste para usar ../assets'fondo_animado.gif',  # debe ser un GIF válido
             anim_delay=0.05,  # velocidad de animación
             allow_stretch=True,
-            keep_ratio=True
+            keep_ratio=False
         )
         layout.add_widget(fondo_animado)
 
@@ -993,7 +1004,7 @@ class MyApp(App):
         screen_manager.add_widget(Screen1(name='pantalla1'))
         screen_manager.add_widget(Screen2(name='pantalla2'))
         screen_manager.add_widget(Screen3(name='pantalla3'))
-        screen_manager.add_widget(Screen3_modulacion(name='Screen3_modulacion'))
+        screen_manager.add_widget(Screen2_modulation(name='Screen2_modulation'))
         return screen_manager
 
 
