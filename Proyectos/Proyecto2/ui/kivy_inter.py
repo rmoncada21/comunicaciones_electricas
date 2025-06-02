@@ -46,12 +46,12 @@ class MyApp(App):
     def build(self):
         root = FloatLayout()
 
-        # Obtener ruta absoluta a la imagen dentro de la carpeta 'assets'
+        # Obtener ruta absoluta a la imagen dentro de la carpeta 'assets','v1'
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        img_path = os.path.join(current_dir, '..', 'assets', 'red.jpg')  # Ajuste para usar ../assets
+        img_path = os.path.join(current_dir, '..', 'assets','v1', 'red.jpg')  # Ajuste para usar ../assets','v1
         
         fondo_animado = Image(
-            source=os.path.join(current_dir, '..', 'assets', 'giphy_plasma1.gif'),  # Ajuste para usar ../assets'fondo_animado.gif',  # debe ser un GIF válido
+            source=os.path.join(current_dir, '..', 'assets','v1', 'giphy_plasma1.gif'),  # Ajuste para usar ../assets','v1'fondo_animado.gif',  # debe ser un GIF válido
             anim_delay=0.05,  # velocidad de animación
             allow_stretch=True,
             keep_ratio=True

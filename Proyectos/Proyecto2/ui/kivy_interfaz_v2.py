@@ -31,9 +31,9 @@ class Screen1(Screen):
         # Fondo animado
         current_dir = os.path.dirname(os.path.abspath(__file__))
         fondo_animado = Image(
-            # source=os.path.join(current_dir, '..', 'assets', 'giphy_wave1.gif'),
-            # source=os.path.join(current_dir, '..', 'assets', 'giphy_signal3.gif'),
-            source=os.path.join(current_dir, '..', 'assets', 'giphy_net1.gif'),
+            # source=os.path.join(current_dir, '..', 'assets', 'v2', 'giphy_wave1.gif'),
+            # source=os.path.join(current_dir, '..', 'assets', 'v2', 'giphy_signal3.gif'),
+            source=os.path.join(current_dir, '..', 'assets', 'v2', 'giphy_net1.gif'),
             anim_delay=0.05,
             allow_stretch=True,
             keep_ratio=False,
@@ -146,7 +146,7 @@ class Screen2(Screen):
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
         fondo_animado = Image(
-            source=os.path.join(current_dir, '..', 'assets', 'giphy_signal1.gif'),  # Ajuste para usar ../assets'fondo_animado.gif',  # debe ser un GIF válido
+            source=os.path.join(current_dir, '..', 'assets', 'v2', 'giphy_signal1.gif'),  # Ajuste para usar ../assets', 'v2'fondo_animado.gif',  # debe ser un GIF válido
             anim_delay=0.05,  # velocidad de animación
             allow_stretch=True,
             keep_ratio=True
@@ -155,7 +155,7 @@ class Screen2(Screen):
 
         # Imagen de fondo
         # fondo = Image(
-        #     source="../assets/wall_paper_1.jpg", 
+        #     source="../assets', 'v2/wall_paper_1.jpg", 
         #     allow_stretch=True, 
         #     keep_ratio=False
         # )
@@ -591,8 +591,8 @@ class Screen2(Screen):
         print(f"Error frecuencia: {self.valor_error_freq}")
         print(f"Ruta de archivo: {self.pwd_archivo}")
         
-        # Ejecutar el script graficar.py como un subproceso
-        subprocess.Popen([sys.executable, "../src/graficar.py", str(500), str(self.frecuencia_modulacion)])
+        # Ejecutar el script script_plot.py como un subproceso
+        subprocess.Popen([sys.executable, "../src/script_plot.py", str(500), str(self.frecuencia_modulacion)])
         # gra_main()
         # return 'TODO'
 
@@ -605,7 +605,7 @@ class Screen2_modulation(Screen):
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
         fondo_animado = Image(
-            source=os.path.join(current_dir, '..', 'assets', 'test_giphy_math2.gif'),  # Ajuste para usar ../assets'fondo_animado.gif',  # debe ser un GIF válido
+            source=os.path.join(current_dir, '..', 'assets', 'v2', 'test_giphy_math2.gif'),  # Ajuste para usar ../assets', 'v2'fondo_animado.gif',  # debe ser un GIF válido
             anim_delay=0.05,  # velocidad de animación
             allow_stretch=True,
             keep_ratio=True
@@ -672,7 +672,7 @@ class Screen3(Screen):
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
         fondo_animado = Image(
-            source=os.path.join(current_dir, '..', 'assets', 'giphy_signal2.gif'),  # Ajuste para usar ../assets'fondo_animado.gif',  # debe ser un GIF válido
+            source=os.path.join(current_dir, '..', 'assets', 'v2', 'giphy_signal2.gif'),  # Ajuste para usar ../assets', 'v2'fondo_animado.gif',  # debe ser un GIF válido
             anim_delay=0.05,  # velocidad de animación
             allow_stretch=True,
             keep_ratio=False
