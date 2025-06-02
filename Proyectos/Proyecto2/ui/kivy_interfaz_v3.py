@@ -5,8 +5,9 @@ import sys
 import subprocess
 import wave
 import contextlib
+import soundfile as sf
 import sounddevice as sd
-from scipy.io import wavfile
+# from scipy.io import wavfile
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -566,7 +567,8 @@ class Screen2(Screen):
                 ruta_archivo = filechooser.selection[0]
                 self.pwd_archivo = ruta_archivo
                 ############## Exportar ruta archivo a otro archivo ##############
-                samplerate_input_signal, input_signal = wavfile.read(ruta_archivo)
+                # samplerate_input_signal, input_signal = wavfile.read(ruta_archivo)
+                data, samplerate = sf.read(ruta_archivo)
                 # sd.play(input_signal, samplerate_input_signal)
                 self.popup.dismiss()
                 self.get_wav_info(ruta_archivo)
@@ -580,21 +582,50 @@ class Screen2(Screen):
         self.popup.open()
     
     ########################### Función Obtener info del wav
+    # Usandi libreria wave
+    # def get_wav_info(self, ruta_archivo):
+    #     try:
+    #         with contextlib.closing(wave.open(ruta_archivo, 'r')) as wf:
+    #             n_channels = wf.getnchannels()
+    #             sample_width = wf.getsampwidth()
+    #             framerate = wf.getframerate()
+    #             n_frames = wf.getnframes()
+    #             duration = n_frames / float(framerate)
+
+    #             info = (
+    #                 f"Archivo: {os.path.basename(ruta_archivo)}\n"
+    #                 f"Canales: {n_channels}\n"
+    #                 f"Frecuencia de muestreo: {framerate} Hz\n"
+    #                 f"Duración: {duration:.2f} segundos\n"
+    #                 f"Profundidad de bits: {sample_width * 8} bits"
+    #             )
+    #     except Exception as e:
+    #         info = f"Error al leer el archivo:\n{str(e)}"
+
+    #     popup_info = Popup(
+    #         title='Información del WAV',
+    #         content=Label(text=info),
+    #         size_hint=(None, None),
+    #         size=(400, 300)
+    #     )
+    #     popup_info.open()
+    
+    # Usando librería soundfile
     def get_wav_info(self, ruta_archivo):
         try:
-            with contextlib.closing(wave.open(ruta_archivo, 'r')) as wf:
-                n_channels = wf.getnchannels()
-                sample_width = wf.getsampwidth()
-                framerate = wf.getframerate()
-                n_frames = wf.getnframes()
-                duration = n_frames / float(framerate)
+            with sf.SoundFile(ruta_archivo) as f:
+                n_channels = f.channels
+                samplerate = f.samplerate
+                n_frames = len(f)
+                duration = n_frames / samplerate
+                subtype = f.subtype  # Por ejemplo: 'PCM_16'
 
                 info = (
                     f"Archivo: {os.path.basename(ruta_archivo)}\n"
                     f"Canales: {n_channels}\n"
-                    f"Frecuencia de muestreo: {framerate} Hz\n"
+                    f"Frecuencia de muestreo: {samplerate} Hz\n"
                     f"Duración: {duration:.2f} segundos\n"
-                    f"Profundidad de bits: {sample_width * 8} bits"
+                    f"Formato: {subtype}"
                 )
         except Exception as e:
             info = f"Error al leer el archivo:\n{str(e)}"
@@ -623,7 +654,7 @@ class Screen2(Screen):
         print(f"Ruta de archivo: {self.pwd_archivo}")
         
         # Ejecutar el script script_plot.py como un subproceso
-        subprocess.Popen([sys.executable, "../src/script_plot.py", str(500), str(self.frecuencia_modulacion)])
+        subprocess.Popen([sys.executable, "src/script_plot.py", str(500), str(self.frecuencia_modulacion)])
         # gra_main()
         # return 'TODO'
 
@@ -956,67 +987,151 @@ class Screen3(Screen):
     
     ########################### Función Cargar Audio
     # Pasar funciones a otro archivo de procesamiento de audio (ssb_mod)
+    # def cargar_audio(self, instance):
+    #     content = BoxLayout(orientation='vertical')
+
+    #     filechooser = FileChooserListView(
+    #         path=os.getcwd(),
+    #         filters=['*.wav'],
+    #         multiselect=True  # Permitir múltiples selecciones
+    #     )
+    #     content.add_widget(filechooser)
+
+    #     btn_select = Button(text='Seleccionar', size_hint=(1, 0.2))
+    #     content.add_widget(btn_select)
+
+    #     self.popup = Popup(title='Selecciona dos archivos WAV', content=content,
+    #                        size_hint=(0.8, 0.8))
+
+    #     def on_select(*args):
+    #         seleccionados = filechooser.selection
+    #         if len(seleccionados) != 2:
+    #             error_popup = Popup(title="Error",
+    #                                 content=Label(text="Por favor selecciona exactamente 2 archivos WAV."),
+    #                                 size_hint=(None, None), size=(400, 200))
+    #             error_popup.open()
+    #             return
+
+    #         # Procesar ambos archivos
+    #         for ruta in seleccionados:
+    #             try:
+    #                 # samplerate, data = wavfile.read(ruta)
+    #                 data, samplerate = sf.read(ruta)
+    #                 data, samplerate = sf.read(ruta)
+    #                 sd.play(data, samplerate)
+    #                 self.get_wav_info(ruta)
+    #             except Exception as e:
+    #                 error_popup = Popup(title="Error al leer archivo",
+    #                                     content=Label(text=str(e)),
+    #                                     size_hint=(None, None), size=(400, 200))
+    #                 error_popup.open()
+
+    #         self.popup.dismiss()
+
+    #     btn_select.bind(on_press=on_select)
+    #     self.popup.open()
+
+    # Mejora en la cargar_audio: Se seleccionar dos archivos pero uno a la vez
     def cargar_audio(self, instance):
-        content = BoxLayout(orientation='vertical')
+        self.archivos_seleccionados = []
 
-        filechooser = FileChooserListView(
-            path=os.getcwd(),
-            filters=['*.wav'],
-            multiselect=True  # Permitir múltiples selecciones
-        )
-        content.add_widget(filechooser)
+        def seleccionar_archivo(etapa=1):
+            content = BoxLayout(orientation='vertical')
 
-        btn_select = Button(text='Seleccionar', size_hint=(1, 0.2))
-        content.add_widget(btn_select)
+            filechooser = FileChooserListView(
+                path=os.getcwd(),
+                filters=['*.wav'],
+                multiselect=False  # Solo un archivo a la vez
+            )
+            content.add_widget(filechooser)
 
-        self.popup = Popup(title='Selecciona dos archivos WAV', content=content,
-                           size_hint=(0.8, 0.8))
+            btn_select = Button(text=f'Seleccionar archivo {etapa}', size_hint=(1, 0.2))
+            content.add_widget(btn_select)
 
-        def on_select(*args):
-            seleccionados = filechooser.selection
-            if len(seleccionados) != 2:
-                error_popup = Popup(title="Error",
-                                    content=Label(text="Por favor selecciona exactamente 2 archivos WAV."),
-                                    size_hint=(None, None), size=(400, 200))
-                error_popup.open()
-                return
+            popup = Popup(title=f'Selecciona archivo WAV {etapa}', content=content,
+                          size_hint=(0.8, 0.8))
 
-            # Procesar ambos archivos
-            for ruta in seleccionados:
-                try:
-                    samplerate, data = wavfile.read(ruta)
-                    sd.play(data, samplerate)
-                    self.get_wav_info(ruta)
-                except Exception as e:
-                    error_popup = Popup(title="Error al leer archivo",
-                                        content=Label(text=str(e)),
+            def on_select(*args):
+                seleccionados = filechooser.selection
+                if len(seleccionados) != 1:
+                    error_popup = Popup(title="Error",
+                                        content=Label(text="Por favor selecciona un archivo WAV."),
                                         size_hint=(None, None), size=(400, 200))
                     error_popup.open()
+                    return
 
-            self.popup.dismiss()
+                self.archivos_seleccionados.append(seleccionados[0])
+                print(f"Archivos Screen 2:{self.archivos_seleccionados}")
+                popup.dismiss()
 
-        btn_select.bind(on_press=on_select)
-        self.popup.open()
+                if etapa == 1:
+                    # Pedir el segundo archivo
+                    seleccionar_archivo(etapa=2)
+                else:
+                    # Ya se tienen dos archivos para procesarlos
+                    for ruta in self.archivos_seleccionados:
+                        try:
+                            # data, samplerate = sf.read(ruta)
+                            # sd.play(data, samplerate)
+                            self.get_wav_info(ruta)
+                        except Exception as e:
+                            error_popup = Popup(title="Error al leer archivo",
+                                                content=Label(text=str(e)),
+                                                size_hint=(None, None), size=(400, 200))
+                            error_popup.open()
 
-    
+            btn_select.bind(on_press=on_select)
+            popup.open()
+        
+        seleccionar_archivo()
+
 
     ########################### Función Obtner Info del archivo wav
     # Obtener el archivo de audio WAV
+    # usando libreria wave
+    # def get_wav_info(self, ruta_archivo):
+    #     try:
+    #         with contextlib.closing(wave.open(ruta_archivo, 'r')) as wf:
+    #             n_channels = wf.getnchannels()
+    #             sample_width = wf.getsampwidth()
+    #             framerate = wf.getframerate()
+    #             n_frames = wf.getnframes()
+    #             duration = n_frames / float(framerate)
+
+    #             info = (
+    #                 f"Archivo: {os.path.basename(ruta_archivo)}\n"
+    #                 f"Canales: {n_channels}\n"
+    #                 f"Frecuencia de muestreo: {framerate} Hz\n"
+    #                 f"Duración: {duration:.2f} segundos\n"
+    #                 f"Profundidad de bits: {sample_width * 8} bits"
+    #             )
+    #     except Exception as e:
+    #         info = f"Error al leer el archivo:\n{str(e)}"
+
+    #     popup_info = Popup(
+    #         title='Información del WAV',
+    #         content=Label(text=info),
+    #         size_hint=(None, None),
+    #         size=(400, 300)
+    #     )
+    #     popup_info.open()
+
+    # usando libreria soundfile
     def get_wav_info(self, ruta_archivo):
         try:
-            with contextlib.closing(wave.open(ruta_archivo, 'r')) as wf:
-                n_channels = wf.getnchannels()
-                sample_width = wf.getsampwidth()
-                framerate = wf.getframerate()
-                n_frames = wf.getnframes()
-                duration = n_frames / float(framerate)
+            with sf.SoundFile(ruta_archivo) as f:
+                n_channels = f.channels
+                samplerate = f.samplerate
+                n_frames = len(f)
+                duration = n_frames / samplerate
+                subtype = f.subtype  # Por ejemplo: 'PCM_16'
 
                 info = (
                     f"Archivo: {os.path.basename(ruta_archivo)}\n"
                     f"Canales: {n_channels}\n"
-                    f"Frecuencia de muestreo: {framerate} Hz\n"
+                    f"Frecuencia de muestreo: {samplerate} Hz\n"
                     f"Duración: {duration:.2f} segundos\n"
-                    f"Profundidad de bits: {sample_width * 8} bits"
+                    f"Formato: {subtype}"
                 )
         except Exception as e:
             info = f"Error al leer el archivo:\n{str(e)}"

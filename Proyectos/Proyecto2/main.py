@@ -1,4 +1,4 @@
-from ui.kivy_inter import MyApp
+from ui.kivy_interfaz_v3 import MyApp
 
 if __name__ == '__main__':
     app = MyApp();
