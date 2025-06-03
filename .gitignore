@@ -10,3 +10,4 @@ test.*
 __pycache__
 *test*
 *.asv
+*.npy
