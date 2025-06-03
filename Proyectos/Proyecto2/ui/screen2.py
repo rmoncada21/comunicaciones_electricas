@@ -3,7 +3,8 @@ import sys
 import subprocess
 
 import soundfile as sf  # Para leer archivos WAV
-
+import src.SSB as ssb
+import numpy as np
 # Kivy core
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
@@ -77,11 +78,56 @@ class Screen2(Screen):
             text='Cargar Archivo WAV',
             size_hint=(None, None),
             size=(200, 50),
-            pos_hint={'center_x': .15, 'center_y': .72}
+            pos_hint={'center_x': .15, 'center_y': .84}
         )
         btn_cargar_audio.bind(on_press=self.cargar_audio)
         layout.add_widget(btn_cargar_audio)
 
+        ########################### Boton container - SSB SC o FC
+        self.boton_container0 = BoxLayout(
+            # orientation='horizontal',
+            size_hint=(None, None),
+            size=(200, 50),
+            pos_hint={'center_x': .15, 'center_y': 0.72},
+            spacing=10
+        )
+
+        ########################### Botón principal - Escoger modulación
+        self.boton_principal0 = Button(
+            text="Escoger SSB SC o FC",
+            size_hint=(None, None),
+            size=(200, 50)
+        )
+        self.boton_principal0.bind(on_press=self.toggle_botones0)
+        self.boton_container0.add_widget(self.boton_principal0)
+
+        ########################### Botones SC escondido
+        self.boton_ssb_sc = Button(
+            text="SC",
+            size_hint=(None, None),
+            size=(200, 50),
+            opacity=0,
+            disabled=True
+        )
+        # self.boton_ssb_sc.bind(on_press=self.get_tipo_mod)
+        # Obtener el botón presionado
+        self.boton_ssb_sc.bind(on_press=self.set_ssb_tipo)
+        self.boton_container0.add_widget(self.boton_ssb_sc)
+
+        ########################### Botones LSB escondido
+        self.boton_ssb_fc = Button(
+            text="LSB",
+            size_hint=(None, None),
+            size=(200, 50),
+            opacity=0,
+            disabled=True
+        )
+        # self.boton_ssb_fc.bind(on_press=self.get_tipo_mod)
+        # Obtener el botón presionado
+        self.boton_ssb_fc.bind(on_press=self.set_ssb_tipo)
+        self.boton_container0.add_widget(self.boton_ssb_fc)
+
+        layout.add_widget(self.boton_container0)
         ####################################################### CHECKPOINT
         # Escoger banda a transmitir
         # btn_tipo_modulacion = Button(
@@ -121,7 +167,7 @@ class Screen2(Screen):
         )
         # self.boton_usb.bind(on_press=self.get_tipo_mod)
         # Obtener el botón presionado
-        self.boton_usb.bind(on_press=self.seleccionar_modo)
+        self.boton_usb.bind(on_press=self.set_banda_lateral)
         self.boton_container.add_widget(self.boton_usb)
 
         ########################### Botones LSB escondido
@@ -134,7 +180,7 @@ class Screen2(Screen):
         )
         # self.boton_lsb.bind(on_press=self.get_tipo_mod)
         # Obtener el botón presionado
-        self.boton_lsb.bind(on_press=self.seleccionar_modo)
+        self.boton_lsb.bind(on_press=self.set_banda_lateral)
         self.boton_container.add_widget(self.boton_lsb)
 
         layout.add_widget(self.boton_container)
@@ -227,15 +273,31 @@ class Screen2(Screen):
     # def get_tipo_mod(self, instance):
     #     returnk'TODO'
     
-    ########################### Función Seleccionar modo
-    def seleccionar_modo(self, instance):
-        self.modo_seleccionado = instance.text
-        print(f"Modo guardado: {self.modo_seleccionado}")
+    ########################### Función Seleccionar tipo SSB SC o FC
+    def set_ssb_tipo(self, instance):
+        self.ssb_tipo = instance.text
+        print(f"SSB SC o FC: {self.ssb_tipo}")
+
+    ########################### Función Seleccionar banda lateral
+    def set_banda_lateral(self, instance):
+        self.banda_lateral = instance.text
+        print(f"Banda lateral seleccionada: {self.banda_lateral}")
 
     ########################### Función Mostrar / esconder botones USB - LSB
     def toggle_botones(self, instance):
         # Alternar visibilidad de los botones
         for btn in [self.boton_usb, self.boton_lsb]:
+            if btn.opacity == 0:
+                btn.opacity = 1
+                btn.disabled = False
+            else:
+                btn.opacity = 0
+                btn.disabled = True
+    
+    ########################### Función Mostrar / esconder botones USB - LSB
+    def toggle_botones0(self, instance):
+        # Alternar visibilidad de los botones
+        for btn in [self.boton_ssb_sc, self.boton_ssb_fc]:
             if btn.opacity == 0:
                 btn.opacity = 1
                 btn.disabled = False
@@ -267,13 +329,13 @@ class Screen2(Screen):
             size=(400, 250)
         )
 
-        def confirmar_freq_mod(instance):
+        def confirmar_carrier_freq(instance):
             try:
-                frecuencia = float(self.input_freq_mod.text)
+                frecuencia_carrier = float(self.input_freq_mod.text)
                 self.popup_freq_mod.dismiss()
                 popup_result = Popup(
                     title='Frecuencia Registrada',
-                    content=Label(text=f'Frecuencia de modulación ingresada: {frecuencia} Hz'),
+                    content=Label(text=f'Frecuencia de carrier ingresada: {frecuencia_carrier} Hz'),
                     size_hint=(None, None),
                     size=(400, 200)
                 )
@@ -281,9 +343,9 @@ class Screen2(Screen):
 
                 ############################# ###########################
                 # Guardar el valor o exportarlo a otra función
-                self.frecuencia_modulacion = frecuencia
+                self.frecuencia_carrier = frecuencia_carrier
                 # self.get_carrier(frecuencia)
-                # print(f"Frecuncia desde kivy: {self.frecuencia_modulacion}");
+                # print(f"Frecuncia desde kivy: {self.frecuencia_carrier}");
                 ############################# ###########################3
 
             except ValueError:
@@ -295,7 +357,7 @@ class Screen2(Screen):
                 )
                 popup_error.open()
 
-        btn_confirmar.bind(on_press=confirmar_freq_mod)
+        btn_confirmar.bind(on_press=confirmar_carrier_freq)
         self.popup_freq_mod.open()    
 
     ########################### Función Set error de fase
@@ -475,11 +537,16 @@ class Screen2(Screen):
     def get_wav_info(self, ruta_archivo):
         try:
             with sf.SoundFile(ruta_archivo) as f:
+                data_audio = f.read(dtype='float32')
                 n_channels = f.channels
                 samplerate = f.samplerate
                 n_frames = len(f)
                 duration = n_frames / samplerate
                 subtype = f.subtype  # Por ejemplo: 'PCM_16'
+                
+                self.audio_data = data_audio
+                self.audio_n_canales = n_channels
+                self.audio_samplerate = samplerate
 
                 info = (
                     f"Archivo: {os.path.basename(ruta_archivo)}\n"
@@ -499,22 +566,49 @@ class Screen2(Screen):
         )
         popup_info.open()
 
-    # def get_carrier(self, carrier):
-    #     return 'TODO'
-    
-    # def get_phase(self, instance):
-    #     return 'TODO'
-
     ########################### Función Iniciar modulación
     def init_mod(self, instance):
         # Obtener valores digitados desde la interfaz
-        print(f"Modo seleccionado: {self.modo_seleccionado}")
-        print(f"Frecuencia portadora: {self.frecuencia_modulacion}")
+        print(f"Longitud de data {len(self.audio_data)}")
+        print(f"SSB tipo SC or FC: {self.ssb_tipo}")
+        print(f"Banda lateral: {self.banda_lateral}")
+        print(f"Frecuencia portadora: {self.frecuencia_carrier}")
         print(f"Error fase: {self.valor_error_fase}")
         print(f"Error frecuencia: {self.valor_error_freq}")
         print(f"Ruta de archivo: {self.pwd_archivo}")
+
+        print(f'Numero de canales: {self.audio_n_canales}')
+        print(f'Frecuencia de muestreo: {self.audio_samplerate}')
         
         # Ejecutar el script script_plot.py como un subproceso
-        subprocess.Popen([sys.executable, "src/script_plot.py", str(500), str(self.frecuencia_modulacion)])
+        # subprocess.Popen([sys.executable, "src/script_plot.py", str(500), str(self.frecuencia_carrier)])
+        # subprocess.Popen([
+        #     sys.executable, "src/script_plot.py",
+        #     str(500),
+        #     str(self.frecuencia_carrier),
+        #     "espectro"  # o "senal", o "ambos"
+        # ])
+
+        ssb0 = ssb.SSB()
+        ssb_mod = ssb0.ssb_mono_mod(self.audio_data, self.audio_samplerate, self.frecuencia_carrier, "sc", "usb")
+
+        np.save("usb_signal.npy", ssb_mod[0])  # Guarda en disco
+
+        subprocess.Popen([
+                    sys.executable, "src/script_plot.py",
+                    "usb_signal.npy",
+                    str(self.audio_samplerate),
+                    "senal"  # espectro, "senal", o "ambos"
+                ])
+        
+        subprocess.Popen([
+                    sys.executable, "src/script_plot.py",
+                    "usb_signal.npy",
+                    str(self.audio_samplerate),
+                    "espectro"  # espectro, "senal", o "ambos"
+                ])
+
+        # ssb_demod = ssb0.ssb_mono_demod("usb", ssb_mod[0], self.frecuencia_carrier, self.audio_samplerate)
+
         # gra_main()
         # return 'TODO'
