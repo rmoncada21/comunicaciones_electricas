@@ -186,7 +186,7 @@ class Screen0_loading(Screen):
 
         # Carga diferida mínima
         # Clock.schedule_once(self.load_screen_1n2, 7.0)
-        Clock.schedule_once(self.load_screen_1, 7.0)
+        Clock.schedule_once(self.load_screen_1, 6)
         # Clock.schedule_once(self.load_others_screen, 4.0)
         Clock.schedule_once(self.change_to_next, 16.0)
 
