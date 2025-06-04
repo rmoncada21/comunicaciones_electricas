@@ -18,8 +18,8 @@ class Screen1(Screen):
         layout.add_widget(Label(text="Pantalla Principal", font_size=20, pos_hint={"center_x": 0.5, "center_y": 0.5}))
         self.add_widget(layout)
 
-        Clock.schedule_once(self.load_screen_2, 0)
-        Clock.schedule_once(self.load_screen_3, 0)
+        Clock.schedule_once(self.load_screen_2, 9)
+        Clock.schedule_once(self.load_screen_3, 9)
 
         # Fondo animado
         current_dir = os.path.dirname(os.path.abspath(__file__))
