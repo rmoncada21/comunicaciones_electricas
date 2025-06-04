@@ -11,9 +11,6 @@ from scipy.signal import butter, filtfilt, hilbert
 
 # from src.script_plot import ModuladorDSBSC
 
-# from scipy.signal import butter, filtfilt
-# from scipy.signal import hilbert, welch
-
 # frecuencia de portadora ?
 # error de frecuencia ?
 # error de fase ?
@@ -65,7 +62,6 @@ class SSB:
         
         return usb, lsb
     
-
     def ssb_mono_demod(self, nombre_banda, banda_lateral, frecuencia_carrier, sample_rate):
         
         # --- Filtro pasa bajas ---
@@ -79,7 +75,7 @@ class SSB:
         time = np.linspace(0, N / sample_rate, N, endpoint=False)
 
         # --- Demodulación coherente USB ---
-        banda_lateral = banda_lateral * 2 * np.cos(2 * np.pi * frecuencia_carrier * t)  # recuperar m(t)
+        banda_lateral = banda_lateral * 2 * np.cos(2 * np.pi * frecuencia_carrier * time)  # recuperar m(t)
         banda_lateral_filtered = lowpass(banda_lateral, sample_rate)
 
         # --- Demodulación coherente LSB ---
