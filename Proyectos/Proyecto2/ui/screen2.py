@@ -329,7 +329,7 @@ class Screen2(Screen):
     def set_carrier_freq(self, instance):
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
 
-        label = Label(text='Ingrese frecuencia de modulación (Hz) - FcMax=500MHz: ')
+        label = Label(text='Ingrese frecuencia de portadora (Hz) - FcMax=500MHz: ')
         layout.add_widget(label)
 
         self.input_freq_mod = TextInput(
@@ -367,7 +367,7 @@ class Screen2(Screen):
                 self.popup_freq_mod.dismiss()
                 popup_result = Popup(
                     title='Frecuencia Registrada',
-                    content=Label(text=f'Frecuencia de carrier ingresada: {frecuencia_carrier} Hz'),
+                    content=Label(text=f'Frecuencia de portadora ingresada: {frecuencia_carrier} Hz'),
                     size_hint=(None, None),
                     size=(400, 200)
                 )
@@ -563,7 +563,7 @@ class Screen2(Screen):
     def set_freq_error(self, instance):
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
 
-        label = Label(text='Ingrese error de frecuencia (en Hertz):')
+        label = Label(text='Ingrese error de frecuencia (en Hertz) [±25%×fc]:')
         layout.add_widget(label)
 
         self.input_freq = TextInput(
@@ -588,11 +588,11 @@ class Screen2(Screen):
                 error_freq = float(self.input_freq.text)
                 limite = (25 / 100) * self.frecuencia_carrier
                 print(f"Error ingresado: {error_freq}, Límite: ±{limite}")  # debug
-    
+
                 if not (-limite <= error_freq <= limite):
                     popup_rango = Popup(
                         title='Valor fuera de rango',
-                        content=Label(text=f'El error debe estar entre ±25×fc: ±{limite:.2f} Hz'),
+                        content=Label(text=f'El error debe estar entre ±25%×fc: ±{limite:.2f} Hz'),
                         size_hint=(None, None),
                         size=(370, 200)
                     )
