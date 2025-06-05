@@ -27,7 +27,7 @@ class Screen1(Screen):
             source=os.path.join(current_dir, '..', 'assets', 'v3', 'dribble_robot00ax4.gif'),
             anim_delay=0.05,
             allow_stretch=True,
-            keep_ratio=True,
+            keep_ratio=False,
             size_hint=(1, 1),
             pos_hint={'x': 0, 'y': 0}
         )

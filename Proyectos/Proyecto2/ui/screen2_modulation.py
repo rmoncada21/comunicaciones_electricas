@@ -20,7 +20,7 @@ class Screen2_modulation(Screen):
             source=os.path.join(current_dir, '..', 'assets', 'v3', 'dribble_robotWork.gif'),  # Ajuste para usar ../assets', 'v3'fondo_animado.gif',  # debe ser un GIF válido
             anim_delay=0.05,  # velocidad de animación
             allow_stretch=True,
-            keep_ratio=True
+            keep_ratio=False
         )
         layout.add_widget(fondo_animado)
 

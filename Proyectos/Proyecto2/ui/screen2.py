@@ -33,7 +33,7 @@ class Screen2(Screen):
             source=os.path.join(current_dir, '..', 'assets', 'v3', 'dribble_robot7a.gif'), 
             anim_delay=0.05,  # velocidad de animación
             allow_stretch=True,
-            keep_ratio=True
+            keep_ratio=False
         )
         layout.add_widget(fondo_animado)
 
@@ -703,12 +703,12 @@ class Screen2(Screen):
         ssb = SSB()
         usb, lsb = ssb.ssb_mono_mod(self.audio_data, self.audio_samplerate, self.frecuencia_carrier, "sc", "usb")
 
-        np.save("signal_mod.npy", usb)  # Guarda en disco
+        np.save("output/signal_mod.npy", usb)  # Guarda en disco
 
         # Grafica en el tiempo
         subprocess.Popen([
                     sys.executable, "src/script_plot.py",
-                    "signal.npy",
+                    "output/signal_mod.npy",
                     str(self.audio_samplerate),
                     "senal"  # espectro, "senal", o "ambos"
                 ])
@@ -716,7 +716,7 @@ class Screen2(Screen):
         # Grafica en el espectro
         subprocess.Popen([
                     sys.executable, "src/script_plot.py",
-                    "signal.npy",
+                    "output/signal_mod.npy",
                     str(self.audio_samplerate),
                     "espectro"  # espectro, "senal", o "ambos"
                 ])
@@ -725,7 +725,7 @@ class Screen2(Screen):
         np.save("signal_demod.npy", usb)  # Guarda en disco
         subprocess.Popen([
                     sys.executable, "src/script_plot.py",
-                    "signal.npy",
+                    "output/signal_mod.npy",
                     str(self.audio_samplerate),
                     "senal"  # espectro, "senal", o "ambos"
                 ])
