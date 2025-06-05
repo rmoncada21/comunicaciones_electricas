@@ -99,7 +99,7 @@ class Screen2(Screen):
 
         ########################### Botones LSB escondido
         self.boton_ssb_fc = Button(
-            text="LSB",
+            text="FC",
             size_hint=(None, None),
             size=(200, 50),
             opacity=0,
