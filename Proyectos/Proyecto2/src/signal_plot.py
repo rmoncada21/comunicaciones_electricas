@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-class signal_plot:
+class Signal_plot:
     # def __init__(self, f_m=1000, f_c=3000, fs=10000, dur=0.01):
     def __init__(self, signal, fs, dur=0.01):
         # self.f_m = f_m
@@ -19,23 +19,26 @@ class signal_plot:
         # self.modulada = self.mensaje * self.portadora
         self.modulada = signal
 
-    def graficar_senal(self):
+    def graficar_senal(self, titulo, lim):
         plt.figure(figsize=(10, 4))
         plt.plot(self.t, self.modulada)
-        plt.title(f"Señal DSB-SC (f_m=Hz, f_c=Hz)")
+        # plt.title(f"Señal DSB-SC (f_m=Hz, f_c=Hz)")
+        plt.title(f"{titulo}")
         plt.xlabel("Tiempo [s]")
+        plt.xlim(0, lim)
         plt.ylabel("Amplitud")
         plt.grid(True)
         plt.tight_layout()
         plt.show()
 
-    def graficar_espectro(self):
+    def graficar_espectro(self, titulo, lim):
         espectro = np.abs(np.fft.fft(self.modulada)) / len(self.modulada)
         freqs = np.fft.fftfreq(len(self.modulada), d=1/self.fs)
 
         plt.figure(figsize=(10, 4))
         plt.plot(np.fft.fftshift(freqs), np.fft.fftshift(espectro))
-        plt.title("Espectro de la señal DSB-SC")
+        # plt.title("Espectro de la señal DSB-SC")
+        plt.title(f"{titulo}")
         plt.xlabel("Frecuencia [Hz]")
         plt.ylabel("Magnitud")
         plt.grid(True)
@@ -48,15 +51,17 @@ def main():
     f_s = float(sys.argv[2]) if len(sys.argv) > 2 else 3000
     # f_c = float(sys.argv[2]) if len(sys.argv) > 2 else 3000
     modo = sys.argv[3] if len(sys.argv) > 3 else "ambos"  # "senal", "espectro", o "ambos"
+    lim = sys.argv[4] if len(sys.argv) > 4 else 1
+    titulo = sys.argv[4] if len(sys.argv) > 5 else "Agregar titulo"
 
     modulador = signal_plot(signal, f_s)
 
     if modo == "senal":
-        modulador.graficar_senal()
+        modulador.graficar_senal(titulo, lim)
     elif modo == "espectro":
         modulador.graficar_espectro()
     else:
-        modulador.graficar_senal()
+        modulador.graficar_senal(titulo, lim)
         modulador.graficar_espectro()
 
 
