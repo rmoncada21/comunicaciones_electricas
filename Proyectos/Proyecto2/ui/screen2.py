@@ -5,7 +5,7 @@ import subprocess
 import soundfile as sf
 # import src.SSB as ssb
 import numpy as np
-from src.SSB import SSB
+from src.ssb import SSB
 
 # Kivy core
 from kivy.app import App
@@ -41,7 +41,7 @@ class Screen2(Screen):
         label_titulo = Label(
             text="Modulación SSB (USB - LSB)",
             font_size=24,
-            size_hint=(.6, .1),
+            size_hint=(.6, .1),# TODO: botones para reproducir sonidos
             pos_hint={'center_x': .5, 'top': 1}
         )
         layout.add_widget(label_titulo)
@@ -212,6 +212,7 @@ class Screen2(Screen):
         btn_salir.bind(on_press=self.salir)
         Clock.schedule_once(self.load_screen2_modulation, 0)
         layout.add_widget(btn_salir)
+
     ############################################################################################################
     def load_screen2_modulation(self, dt):
         # self.status_label.text = "Cargando pantallas secundarias..."
@@ -242,6 +243,7 @@ class Screen2(Screen):
     ########################### Función Seleccionar tipo SSB SC o FC
     def set_ssb_tipo(self, instance):
         self.ssb_tipo = instance.text
+        # self.manager.ssb_tipo_interpantalla = self.ssb_tipo
         print(f"SSB SC o FC: {self.ssb_tipo}")
 
     ########################### Función Seleccionar banda lateral
@@ -270,61 +272,6 @@ class Screen2(Screen):
             else:
                 btn.opacity = 0
                 btn.disabled = True
-
-    ########################### Función Set frecuencia portadora
-    # def set_carrier_freq(self, instance):
-    #     layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-
-    #     label = Label(text='Ingrese frecuencia de modulación (Hz):')
-    #     layout.add_widget(label)
-
-    #     self.input_freq_mod = TextInput(
-    #         multiline=False,
-    #         input_filter='float',
-    #         hint_text='Ej: 1000.0'
-    #     )
-    #     layout.add_widget(self.input_freq_mod)
-
-    #     btn_confirmar = Button(text='Confirmar', size_hint=(1, 0.3))
-    #     layout.add_widget(btn_confirmar)
-
-    #     self.popup_freq_mod = Popup(
-    #         title='Frecuencia de Modulación',
-    #         content=layout,
-    #         size_hint=(None, None),
-    #         size=(400, 250)
-    #     )
-
-    #     def confirmar_carrier_freq(instance):
-    #         try:
-    #             frecuencia_carrier = float(self.input_freq_mod.text)
-    #             self.popup_freq_mod.dismiss()
-    #             popup_result = Popup(
-    #                 title='Frecuencia Registrada',
-    #                 content=Label(text=f'Frecuencia de carrier ingresada: {frecuencia_carrier} Hz'),
-    #                 size_hint=(None, None),
-    #                 size=(400, 200)
-    #             )
-    #             popup_result.open()
-
-    #             ############################# ###########################
-    #             # Guardar el valor o exportarlo a otra función
-    #             self.frecuencia_carrier = frecuencia_carrier
-    #             # self.get_carrier(frecuencia)
-    #             # print(f"Frecuncia desde kivy: {self.frecuencia_carrier}");
-    #             ############################# ###########################3
-
-    #         except ValueError:
-    #             popup_error = Popup(
-    #                 title='Entrada inválida',
-    #                 content=Label(text='Por favor, ingrese un número válido.'),
-    #                 size_hint=(None, None),
-    #                 size=(350, 200)
-    #             )
-    #             popup_error.open()
-
-    #     btn_confirmar.bind(on_press=confirmar_carrier_freq)
-    #     self.popup_freq_mod.open()
 
     def set_carrier_freq(self, instance):
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
@@ -388,62 +335,6 @@ class Screen2(Screen):
         btn_confirmar.bind(on_press=confirmar_carrier_freq)
         self.popup_freq_mod.open()
     
-
-    ########################### Función Set error de fase
-    # def set_phase_error(self, instance):
-    #     layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-
-    #     label = Label(text='Ingrese error de fase (en grados):')
-    #     layout.add_widget(label)
-
-    #     self.input_fase = TextInput(
-    #         multiline=False,
-    #         input_filter='float',
-    #         hint_text='Ej: 45.0'
-    #     )
-    #     layout.add_widget(self.input_fase)
-
-    #     btn_confirmar = Button(text='Confirmar', size_hint=(1, 0.3))
-    #     layout.add_widget(btn_confirmar)
-
-    #     self.popup_fase = Popup(
-    #         title='Error de Fase',
-    #         content=layout,
-    #         size_hint=(None, None),
-    #         size=(400, 250)
-    #     )
-
-    #     def confirmar_error(instance):
-    #         try:
-    #             error = float(self.input_fase.text)
-    #             self.popup_fase.dismiss()
-    #             popup_result = Popup(
-    #                 title='Fase Registrada',
-    #                 content=Label(text=f'Error de fase ingresado: {error} grados'),
-    #                 size_hint=(None, None),
-    #                 size=(350, 200)
-    #             )
-    #             popup_result.open()
-                
-    #             ############################# ###########################
-    #             # Guardar el valor o llamarlo desde otra función
-    #             self.valor_error_fase = error
-    #             # print(f"Error valor fase: {self.valor_error_fase}")
-    #             # self.aplicar_error_fase(error)
-    #             # print(f"Aplicar valor fase: {self.aplicar_valor_error_fase}")
-    #             ############################# ###########################
-
-    #         except ValueError:
-    #             popup_error = Popup(
-    #                 title='Entrada inválida',
-    #                 content=Label(text='Por favor, ingrese un número válido.'),
-    #                 size_hint=(None, None),
-    #                 size=(350, 200)
-    #             )
-    #             popup_error.open()
-
-    #     btn_confirmar.bind(on_press=confirmar_error)
-    #     self.popup_fase.open()
     def set_phase_error(self, instance):
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
 
@@ -505,60 +396,6 @@ class Screen2(Screen):
 
         btn_confirmar.bind(on_press=confirmar_error)
         self.popup_fase.open()
-
-    
-    ########################### Función Set error de frecuencia
-    # def set_freq_error(self, instance):
-    #     layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
-
-    #     label = Label(text='Ingrese error de frecuencia (en Hertz/radianes):')
-    #     layout.add_widget(label)
-
-    #     self.input_fase = TextInput(
-    #         multiline=False,
-    #         input_filter='float',
-    #         hint_text='Ej: 45.0'
-    #     )
-    #     layout.add_widget(self.input_fase)
-
-    #     btn_confirmar = Button(text='Confirmar', size_hint=(1, 0.3))
-    #     layout.add_widget(btn_confirmar)
-
-    #     self.popup_fase = Popup(
-    #         title='Error de Fase',
-    #         content=layout,
-    #         size_hint=(None, None),
-    #         size=(400, 250)
-    #     )
-
-    #     def confirmar_error(instance):
-    #         try:
-    #             # Exxportar este error de fase 
-    #             error_freq = float(self.input_fase.text)
-    #             self.popup_fase.dismiss()
-    #             popup_result = Popup(
-    #                 title='Fase Registrada',
-    #                 content=Label(text=f'Error de fase ingresado: {error_freq} grados'),
-    #                 size_hint=(None, None),
-    #                 size=(350, 200)
-    #             )
-    #             popup_result.open()
-
-    #             # Guardar el valor o llamarlo desde otra función
-    #             self.valor_error_freq = error_freq
-    #             # self.aplicar_error_fase(error_freq)
-
-    #         except ValueError:
-    #             popup_error = Popup(
-    #                 title='Entrada inválida',
-    #                 content=Label(text='Por favor, ingrese un número válido.'),
-    #                 size_hint=(None, None),
-    #                 size=(350, 200)
-    #             )
-    #             popup_error.open()
-
-    #     btn_confirmar.bind(on_press=confirmar_error)
-    #     self.popup_fase.open()
 
     def set_freq_error(self, instance):
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
@@ -657,6 +494,7 @@ class Screen2(Screen):
     def get_wav_info(self, ruta_archivo):
         try:
             with sf.SoundFile(ruta_archivo) as f:
+                audio_filename = os.path.basename(ruta_archivo)
                 data_audio = f.read(dtype='float32')
                 n_channels = f.channels
                 samplerate = f.samplerate
@@ -664,6 +502,8 @@ class Screen2(Screen):
                 duration = n_frames / samplerate
                 subtype = f.subtype  # Por ejemplo: 'PCM_16'
                 
+                self.audio_duration = duration
+                self.audio_filename = audio_filename
                 self.audio_data = data_audio
                 self.audio_n_canales = n_channels
                 self.audio_samplerate = samplerate
@@ -689,43 +529,76 @@ class Screen2(Screen):
     ########################### Función Iniciar modulación
     def init_mod(self, instance):
         # Obtener valores digitados desde la interfaz
-        print(f"Longitud de data {len(self.audio_data)}")
-        print(f"SSB tipo SC or FC: {self.ssb_tipo}")
-        print(f"Banda lateral: {self.banda_lateral}")
-        print(f"Frecuencia portadora: {self.frecuencia_carrier}")
-        print(f"Error fase: {self.valor_error_fase}")
-        print(f"Error frecuencia: {self.valor_error_freq}")
-        print(f"Ruta de archivo: {self.pwd_archivo}")
+        
+        # print(f"Longitud de data {len(self.audio_data)}")
+        # print(f"SSB tipo SC or FC: {self.ssb_tipo}")
+        # print(f"Banda lateral: {self.banda_lateral}")
+        # print(f"Frecuencia portadora: {self.frecuencia_carrier}")
+        # print(f"Error fase: {self.valor_error_fase}")
+        # print(f"Error frecuencia: {self.valor_error_freq}")
+        # print(f"Ruta de archivo: {self.pwd_archivo}")
+        # print(f'Numero de canales: {self.audio_n_canales}') # Mono (1) o estéreo (2)
+        # print(f'Frecuencia de muestreo: {self.audio_samplerate}')
 
-        print(f'Numero de canales: {self.audio_n_canales}') # Mono (1) o estéreo (2)
-        print(f'Frecuencia de muestreo: {self.audio_samplerate}')
+        ######## COMPARTIR INFORMACIÓN ENTRE PANTALLAS ########
+        self.manager.audio_filename = self.audio_filename
+        self.manager.audio_data = self.audio_data
+        self.manager.audio_duration = self.audio_duration
+        self.manager.ssb_tipo = self.ssb_tipo
+        self.manager.banda_lateral = self.banda_lateral
+        self.manager.frecuencia_carrier = self.frecuencia_carrier
+        self.manager.valor_error_fase = self.valor_error_fase
+        self.manager.valor_error_freq = self.valor_error_freq
+        self.manager.pwd_archivo = self.pwd_archivo
+        self.manager.audio_n_canales = self.audio_n_canales
+        self.manager.audio_samplerate = self.audio_samplerate
 
+        np.save("output/ssb_mensaje_data.npy", self.audio_data)  # Guarda en disco
+        np.save("output/ssb_mensaje_samplerate.npy", self.audio_samplerate)  # Guarda en disco
+
+        # Grafica en el tiempo del mensaje
+        # subprocess.run([
+        #             sys.executable, "src/signal_plot.py",
+        #             "output/signal_mensaje.npy",
+        #             str(self.audio_samplerate),
+        #             "ambos",  # espectro, "senal", o "ambos"
+        #             "0.05",
+        #             f"{str(self.audio_filename)}"
+        #         ])
+
+        # TODO - Modificar parametros de entrada con respecto al archivo mas reciiente
         ssb = SSB()
-        usb, lsb = ssb.ssb_mono_mod(self.audio_data, self.audio_samplerate, self.frecuencia_carrier, "sc", "usb")
+        ssb_banda_lateral_mod = ssb.ssb_mono_mod(self.audio_data, self.audio_samplerate, 
+                                             self.ssb_tipo, self.banda_lateral, self.frecuencia_carrier, 
+                                             self.valor_error_fase, self.valor_error_freq
+                                             )
+        np.save("output/ssb_banda_lateral_mod.npy", ssb_banda_lateral_mod)  # Guarda en disco
 
-        np.save("output/signal_mod.npy", usb)  # Guarda en disco
+        ssb_banda_lateral_demod = ssb.ssb_mono_demod_sc(ssb_banda_lateral_mod, 
+                                                    self.frecuencia_carrier, 
+                                                    self.audio_samplerate
+                                                )
+        np.save("output/ssb_banda_lateral_demod.npy", ssb_banda_lateral_demod)  # Guarda en disco
 
-        # Grafica en el tiempo
-        subprocess.Popen([
-                    sys.executable, "src/script_plot.py",
-                    "output/signal_mod.npy",
-                    str(self.audio_samplerate),
-                    "senal"  # espectro, "senal", o "ambos"
-                ])
+        # np.save("output/signal_mod_ssb_banda.npy", ssb_banda_lateral)  # Guarda en disco
+
+        # # Grafica en el tiempo
+        # subprocess.Popen([
+        #             sys.executable, "src/signal_plot.py",
+        #             "output/signal_mod_ssb_banda.npy",
+        #             str(self.audio_samplerate),
+        #             "ambos",  # espectro, "senal", o "ambos"
+        #             "0.01",
+        #             f"{str(self.banda_lateral)} - {self.ssb_tipo}"
+        #         ])
         
-        # Grafica en el espectro
-        subprocess.Popen([
-                    sys.executable, "src/script_plot.py",
-                    "output/signal_mod.npy",
-                    str(self.audio_samplerate),
-                    "espectro"  # espectro, "senal", o "ambos"
-                ])
+        # banda_demod = ssb.ssb_mono_demod(ssb_banda_lateral, self.frecuencia_carrier, self.audio_samplerate)
         
-        banda_demod = ssb.ssb_mono_demod("usb", usb, self.frecuencia_carrier, self.audio_samplerate)
-        np.save("signal_demod.npy", usb)  # Guarda en disco
-        subprocess.Popen([
-                    sys.executable, "src/script_plot.py",
-                    "output/signal_mod.npy",
-                    str(self.audio_samplerate),
-                    "senal"  # espectro, "senal", o "ambos"
-                ])
+        # np.save("output/signal_demod.npy", ssb_banda_lateral)  # Guarda en disco
+        # subprocess.Popen([
+        #             sys.executable, "src/signal_plot.py",
+        #             "output/signal_mod_ssb_banda.npy",
+        #             str(self.audio_samplerate),
+        #             "senal",  # espectro, "senal", o "ambos"
+        #             f"{str(self.banda_lateral)} - {self.ssb_tipo}"
+        #         ])
