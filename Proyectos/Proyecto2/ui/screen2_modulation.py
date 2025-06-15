@@ -1,4 +1,6 @@
 import os  # Para manejo de rutas y directorios
+import subprocess
+import sys
 
 # Kivy core
 from kivy.app import App  # Para manejar la aplicación y cerrar con stop()
@@ -7,6 +9,10 @@ from kivy.uix.label import Label  # Para mostrar texto
 from kivy.uix.button import Button  # Para crear botones
 from kivy.uix.image import Image  # Para mostrar imágenes (y GIFs animados)
 from kivy.uix.floatlayout import FloatLayout  # Para el layout base que usas
+from kivy.clock import Clock
+
+import numpy as np
+import sounddevice as sd
 
 class Screen2_modulation(Screen):
     def __init__(self, **kwargs):
@@ -25,30 +31,60 @@ class Screen2_modulation(Screen):
         layout.add_widget(fondo_animado)
 
         ########################### Título
-        # label_titulo = Label(
-        #     text="Calculando Modulación - Espere un momento",
-        #     font_size=24,
-        #     size_hint=(.6, .1),
-        #     pos_hint={'center_x': .5, 'top': 1}
-        # )
-        # layout.add_widget(label_titulo)
         titulo_boton = Button(
             text="Calculando Modulación - Espere un momento",
             font_size=24,
             size_hint=(.7, .1),
             pos_hint={'center_x': .5, 'top': 1},
-            # background_normal='',  # Esto asegura que el fondo se muestre
-            # background_color=(0.26, 0.52, 0.96, 1),  # Color típico de botón
             disabled=False  # Desactiva la funcionalidad
         )
         layout.add_widget(titulo_boton)
 
         ############################################################################################################
+        btn_reproducir_mensaje = Button(
+            text='Reproducir Mensaje',
+            size_hint=(None, None),
+            size=(215, 50),
+            pos_hint={'center_x': .15, 'center_y': .84}
+        )
+        btn_reproducir_mensaje.bind(on_press=self.reproducir_mensaje)
+        layout.add_widget(btn_reproducir_mensaje)
+
+        # Reproducir modulacion ssb
+        btn_reproducir_modulacion = Button(
+            text='Rep. Mensaje modulado SSB',
+            size_hint=(None, None),
+            size=(215, 50),
+            pos_hint={'center_x': .15, 'center_y': .72}
+        )
+        btn_reproducir_modulacion.bind(on_press=self.reproducir_modulacion)
+        layout.add_widget(btn_reproducir_modulacion)
+
+        # Reproducir demodulacion ssb
+        btn_reproducir_demodulacion = Button(
+            text='Rep. Mensaje demodulado SSB',
+            size_hint=(None, None),
+            size=(215, 50),
+            pos_hint={'center_x': .15, 'center_y': .60}
+        )
+        btn_reproducir_demodulacion.bind(on_press=self.reproducir_demodulacion)
+        layout.add_widget(btn_reproducir_demodulacion)
+
+        # TODO: Todos los Graficos o por separado
+        btn_mostrar_graficos = Button(
+            text='Mostrar Gráficos',
+            size_hint=(None, None),
+            size=(215, 50),
+            pos_hint={'center_x': .15, 'center_y': .48}
+        )
+        btn_mostrar_graficos.bind(on_press=self.mostrar_graficos)
+        layout.add_widget(btn_mostrar_graficos)
+        
         ########################### Botón - Regresar a pantalla 1
         btn_regresar = Button(
             text='Regresar a Pantalla 1', 
             size_hint=(None, None), 
-            size=(200, 50),
+            size=(215, 50),
             pos_hint={'x': 0.60, 'y': .0}
         )
         btn_regresar.bind(on_press=self.regresar_a_pantalla1)
@@ -63,11 +99,81 @@ class Screen2_modulation(Screen):
         )
         btn_salir.bind(on_press=self.salir)
         layout.add_widget(btn_salir)
+
         ############################################################################################################
     
+    # TODO: botones para reproducir sonidos
+    ########################### Función Reproducir mensaje
+    def reproducir_mensaje(self, instance):
+        signal_data = np.load("output/ssb_mensaje_data.npy")
+        signal_samplerate = np.load("output/ssb_mensaje_samplerate.npy").item()
+        sd.play(signal_data, signal_samplerate)
+        pass
+
+    def reproducir_modulacion(self, instance):
+        signal_data = np.load("output/ssb_banda_lateral_mod.npy")
+        signal_samplerate = np.load("output/ssb_mensaje_samplerate.npy").item()
+        sd.play(signal_data, signal_samplerate)
+        pass
+
+    def reproducir_demodulacion(self, instance):
+        signal_data = np.load("output/ssb_banda_lateral_demod.npy")
+        signal_samplerate = np.load("output/ssb_mensaje_samplerate.npy").item()
+        sd.play(signal_data, signal_samplerate)
+        pass
+    
+    def mostrar_graficos(self, instance):
+        print(f"Longitud de data {len(self.manager.audio_data)}")
+        print(f"SSB tipo SC or FC: {self.manager.ssb_tipo}")
+        print(f"Banda lateral: {self.manager.banda_lateral}")
+        print(f"Frecuencia portadora: {self.manager.frecuencia_carrier}")
+        print(f"Error fase: {self.manager.valor_error_fase}")
+        print(f"Error frecuencia: {self.manager.valor_error_freq}")
+        print(f"Ruta de archivo: {self.manager.pwd_archivo}")
+        print(f'Numero de canales: {self.manager.audio_n_canales}') # Mono (1) o estéreo (2)
+        print(f'Frecuencia de muestreo: {self.manager.audio_samplerate}')
+
+        if self.manager.audio_filename == "tono.wav":
+            plot_time = 0.05
+        else:
+            plot_time = self.manager.audio_duration
+
+        subprocess.Popen([
+                    sys.executable, "src/signal_plot.py",
+                    "output/ssb_mensaje_data.npy",
+                    str(self.manager.audio_samplerate),
+                    "ambos",  # espectro, "senal", o "ambos"
+                    # "0.05",
+                    str(plot_time),
+                    f"de información {str(self.manager.audio_filename)}" #titulo
+                ])
+        
+        subprocess.Popen([
+                    sys.executable, "src/signal_plot.py",
+                    "output/ssb_banda_lateral_mod.npy",
+                    str(self.manager.audio_samplerate),
+                    "ambos",  # espectro, "senal", o "ambos"
+                    # "0.05",
+                    str(plot_time),
+                    f"MODULADA SSB {str(self.manager.ssb_tipo)} {str(self.manager.banda_lateral)} {str(self.manager.audio_filename)}" #titulo
+                ])
+        
+        subprocess.Popen([
+                    sys.executable, "src/signal_plot.py",
+                    "output/ssb_banda_lateral_demod.npy",
+                    str(self.manager.audio_samplerate),
+                    "ambos",  # espectro, "senal", o "ambos"
+                    # "0.05",
+                    str(plot_time),
+                    f"DEMODULADA SSB {str(self.manager.ssb_tipo)} {str(self.manager.banda_lateral)} {str(self.manager.audio_filename)}" #titulo
+        
+                ])
+        
+        # pass
     ########################### Función Regresar a pantalla 1
     def regresar_a_pantalla1(self, instance):
         # Regresar a la primera pantalla
+        print(f"Mensaje interpantalla {self.manager.ssb_tipo}")
         self.manager.current = 'pantalla1'
 
     ########################### Función Salir
