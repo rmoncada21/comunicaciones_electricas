@@ -63,7 +63,7 @@ class Screen1(Screen):
 
         # Botones adicionales
         self.boton_ssb = Button(
-            text="SSB",
+            text="SSB (mono)",
             size_hint=(None, None),
             size=(200, 50),
             opacity=0,
@@ -75,7 +75,7 @@ class Screen1(Screen):
         self.boton_container.add_widget(self.boton_ssb)
 
         self.boton_isb = Button(
-            text="ISB",
+            text="ISB (estéreo)",
             size_hint=(None, None),
             size=(200, 50),
             opacity=0,
