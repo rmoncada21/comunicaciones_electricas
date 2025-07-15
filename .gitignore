@@ -1,6 +1,22 @@
+<<<<<<< HEAD
 test/
 __pycache__
 temp.txt
 *.huffman
 *.csv
 test_*
+=======
+*.log
+*.slxc
+slprj/
+*.Identifier
+*.r****b
+*_tonos.m
+test*/
+*.original
+test.*
+__pycache__
+*test*
+*.asv
+*.npy
+>>>>>>> taller-sync
